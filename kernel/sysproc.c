@@ -6,6 +6,7 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "vm.h"
+#include "sched/sched.h"
 
 uint64
 sys_exit(void)
@@ -106,4 +107,13 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+uint64
+sys_settickets(void)
+{
+  int tickets;
+
+  argint(0, &tickets);
+  return sched_set_tickets(myproc(), tickets);
 }

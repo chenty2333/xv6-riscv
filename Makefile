@@ -13,7 +13,9 @@ OBJS = \
   $K/main.o \
   $K/vm.o \
   $K/proc.o \
-  $K/swtch.o \
+  $K/sched/rr.o \
+  $K/sched/stride.o \
+  $K/arch/riscv/swtch.o \
   $K/trampoline.o \
   $K/trap.o \
   $K/syscall.o \
@@ -73,8 +75,15 @@ CFLAGS += -fno-builtin-strchr -fno-builtin-exit -fno-builtin-malloc -fno-builtin
 CFLAGS += -fno-builtin-free
 CFLAGS += -fno-builtin-memcpy -Wno-main
 CFLAGS += -fno-builtin-printf -fno-builtin-fprintf -fno-builtin-vprintf
-CFLAGS += -I.
+CFLAGS += -I. -I$K
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
+
+SCHED ?= RR
+ifeq ($(SCHED),STRIDE)
+CFLAGS += -DSCHED_STRIDE
+else ifneq ($(SCHED),RR)
+$(error SCHED must be RR or STRIDE)
+endif
 
 # Disable PIE when possible (for Ubuntu 16.10 toolchain)
 ifneq ($(shell $(CC) -dumpspecs 2>/dev/null | grep -e '[^f]no-pie'),)
@@ -137,7 +146,9 @@ UPROGS=\
 	$U/_mkdir\
 	$U/_rm\
 	$U/_sh\
+	$U/_schedtest\
 	$U/_stressfs\
+	$U/_stridetest\
 	$U/_usertests\
 	$U/_grind\
 	$U/_wc\
@@ -153,11 +164,11 @@ fs.img: mkfs/mkfs README $(UPROGS)
 
 clean: 
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
-	*/*.o */*.d */*.asm */*.sym \
 	$K/kernel fs.img \
 	mkfs/mkfs .gdbinit \
-        $U/usys.S \
+	        $U/usys.S \
 	$(UPROGS)
+	find $K $U \( -name '*.o' -o -name '*.d' -o -name '*.asm' -o -name '*.sym' \) -delete
 
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)
@@ -166,7 +177,7 @@ QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 	then echo "-gdb tcp::$(GDBPORT)"; \
 	else echo "-s -p $(GDBPORT)"; fi)
 ifndef CPUS
-CPUS := 3
+CPUS := 1
 endif
 
 QEMUOPTS = -machine virt -bios none -kernel $K/kernel -m 128M -smp $(CPUS) -nographic
@@ -188,8 +199,9 @@ print-gdbport:
 	@echo $(GDBPORT)
 
 QEMU_VERSION := $(shell $(QEMU) --version | head -n 1 | sed -E 's/^QEMU emulator version ([0-9]+\.[0-9]+)\..*/\1/')
+QEMU_VERSION_OK := $(shell awk -v q="$(QEMU_VERSION)" -v min="$(MIN_QEMU_VERSION)" 'BEGIN { split(q, qv, "."); split(min, mv, "."); print ((qv[1] + 0 > mv[1] + 0) || (qv[1] + 0 == mv[1] + 0 && qv[2] + 0 >= mv[2] + 0)) ? 1 : 0 }')
 check-qemu-version:
-	@if [ "$(shell echo "$(QEMU_VERSION) >= $(MIN_QEMU_VERSION)" | bc)" -eq 0 ]; then \
+	@if [ "$(QEMU_VERSION_OK)" -eq 0 ]; then \
 		echo "ERROR: Need qemu version >= $(MIN_QEMU_VERSION)"; \
 		exit 1; \
 	fi

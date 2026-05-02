@@ -3,6 +3,10 @@
 #   void swtch(struct context *old, struct context *new);
 # 
 # Save current registers in old. Load from new.	
+#
+# LAB ch1.1/ch1.2:
+# The offsets below must match struct context in proc.h exactly.
+# Students can fill a small subset of these sd/ld pairs in the lab version.
 
 
 .globl swtch
