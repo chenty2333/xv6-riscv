@@ -21,8 +21,14 @@ worker(int id, int fd)
   r.loops = 0;
   start = uptime();
 
-  while(uptime() - start < RUN_TICKS)
-    r.loops++;
+  // LAB ch1.3 TODO:
+  // 这里需要让子进程在 RUN_TICKS 个时钟 tick 内持续占用 CPU。
+  // 每循环一次就增加 r.loops，用来观察不同子进程是否都获得了运行机会。
+  // 当前占位代码会很快退出，schedtest 不会通过。
+  while(uptime() - start < RUN_TICKS) {
+    // TODO: r.loops++;
+    break;
+  }
 
   r.elapsed = uptime() - start;
   write(fd, &r, sizeof(r));
@@ -36,7 +42,6 @@ main(int argc, char *argv[])
   int p[2];
   int i;
   int pid;
-  struct result r;
 
   if(pipe(p) < 0) {
     fprintf(2, "schedtest: pipe failed\n");
@@ -57,17 +62,16 @@ main(int argc, char *argv[])
 
   close(p[1]);
   printf("schedtest: %d cpu-bound children, %d ticks\n", CHILDREN, RUN_TICKS);
-  for(i = 0; i < CHILDREN; i++) {
-    if(read(p[0], &r, sizeof(r)) != sizeof(r)) {
-      fprintf(2, "schedtest: read failed\n");
-      exit(1);
-    }
-    printf("child %d: elapsed=%d loops=%lu\n", r.id, r.elapsed, r.loops);
-  }
+
+  // LAB ch1.3 TODO:
+  // 父进程需要从 pipe 读取 CHILDREN 个 struct result。
+  // 每读取一个结果，就打印 child id、elapsed 和 loops。
+  // 最后可以检查每个 child 的 loops 都大于 0，确认多个 CPU-bound 进程都运行过。
+  printf("schedtest: TODO collect child results\n");
 
   close(p[0]);
   for(i = 0; i < CHILDREN; i++)
     wait(0);
 
-  exit(0);
+  exit(1);
 }

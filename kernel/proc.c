@@ -171,9 +171,9 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
-  p->tickets = 0;
-  p->stride = 0;
-  p->pass = 0;
+  // LAB ch2.1 TODO:
+  // 如果你在 struct proc 中加入了 tickets/stride/pass，
+  // 请在释放进程时把这些字段清零，避免复用 proc 槽位时带入旧状态。
   p->state = UNUSED;
 }
 

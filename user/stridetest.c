@@ -30,8 +30,14 @@ worker(int id, int fd)
   r.loops = 0;
   start = uptime();
 
-  while(uptime() - start < RUN_TICKS)
-    r.loops++;
+  // LAB ch2.3 TODO:
+  // 和 schedtest 类似，这里需要做 CPU-bound 忙循环。
+  // 不同的是，每个子进程已经设置了不同 tickets。
+  // 完成 stride 调度后，tickets 越多，loops 应该越大。
+  while(uptime() - start < RUN_TICKS) {
+    // TODO: r.loops++;
+    break;
+  }
 
   r.elapsed = uptime() - start;
   write(fd, &r, sizeof(r));
@@ -45,10 +51,6 @@ main(int argc, char *argv[])
   int p[2];
   int i;
   int pid;
-  struct result r;
-  uint64 loops[CHILDREN];
-
-  memset(loops, 0, sizeof(loops));
 
   if(pipe(p) < 0) {
     fprintf(2, "stridetest: pipe failed\n");
@@ -69,24 +71,16 @@ main(int argc, char *argv[])
 
   close(p[1]);
   printf("stridetest: tickets 1:2:4, %d ticks\n", RUN_TICKS);
-  for(i = 0; i < CHILDREN; i++) {
-    if(read(p[0], &r, sizeof(r)) != sizeof(r)) {
-      fprintf(2, "stridetest: read failed\n");
-      exit(1);
-    }
-    loops[r.id] = r.loops;
-    printf("child %d: tickets=%d elapsed=%d loops=%lu\n",
-           r.id, r.tickets, r.elapsed, r.loops);
-  }
+
+  // LAB ch2.3 TODO:
+  // 父进程需要读取 CHILDREN 个 result，并把每个 child 的 loops 保存下来。
+  // 运行 SCHED=STRIDE 时，期望 tickets=1、2、4 的 loops 也大致递增。
+  // 一个简单检查是 loops[0] < loops[1] && loops[1] < loops[2]。
+  printf("stridetest: TODO collect results and check 1:2:4 ratio\n");
 
   close(p[0]);
   for(i = 0; i < CHILDREN; i++)
     wait(0);
 
-  if(loops[0] < loops[1] && loops[1] < loops[2])
-    printf("stridetest: PASS\n");
-  else
-    printf("stridetest: check ratios manually; build with SCHED=STRIDE CPUS=1\n");
-
-  exit(0);
+  exit(1);
 }
