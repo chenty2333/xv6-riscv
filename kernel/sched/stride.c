@@ -40,9 +40,22 @@ sched_set_tickets(struct proc *p, int tickets)
   return 0;
 }
 
-// Return a RUNNABLE process with p->lock held, or 0 if none exists.
-struct proc *
-sched_pick_stride(void)
+int
+sched_set_priority(struct proc *p, int priority)
+{
+  if(priority < 1 || priority > 100)
+    return -1;
+
+  int tickets = priority * (SCHED_MAX_TICKETS / 100);
+  acquire(&p->lock);
+  p->tickets = tickets;
+  p->stride = stride_for_tickets(tickets);
+  release(&p->lock);
+  return 0;
+}
+
+static struct proc *
+sched_scan_best(void)
 {
   struct proc *p;
   struct proc *best = 0;
@@ -61,10 +74,20 @@ sched_pick_stride(void)
     }
   }
 
-  if(best != 0) {
-    // LAB ch2.3: stride scheduling charges the chosen process here.
-    best->pass += best->stride;
-  }
+  return best;
+}
 
+static void
+sched_commit(struct proc *best)
+{
+  if(best != 0)
+    best->pass += best->stride;
+}
+
+struct proc *
+sched_pick_stride(void)
+{
+  struct proc *best = sched_scan_best();
+  sched_commit(best);
   return best;
 }

@@ -25,6 +25,17 @@ char* sys_sbrk(int,int);
 int pause(int);
 int uptime(void);
 int settickets(int);
+int setpriority(int);
+
+struct pstat {
+  int pid;
+  char state;
+  uint64 sched_count;
+  int tickets;
+  uint64 stride;
+  uint64 pass;
+};
+int getpinfo(struct pstat*);
 
 // ulib.c
 int stat(const char*, struct stat*);

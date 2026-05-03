@@ -162,6 +162,24 @@ fs.img: mkfs/mkfs README $(UPROGS)
 
 -include kernel/*.d user/*.d
 
+submit:
+	tar czf submit.tar.gz \
+		$K/arch/riscv/swtch.S \
+		$K/console.c \
+		$K/defs.h \
+		$K/sched/rr.c \
+		$K/sched/stride.c \
+		$K/sched/sched.h \
+		$K/proc.h \
+		$K/proc.c \
+		$K/syscall.h \
+		$K/syscall.c \
+		$K/sysproc.c \
+		$U/schedtest.c \
+		$U/stridetest.c \
+		$U/usys.pl \
+		$U/user.h
+
 clean: 
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
 	$K/kernel fs.img \

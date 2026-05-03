@@ -117,3 +117,21 @@ sys_settickets(void)
   argint(0, &tickets);
   return sched_set_tickets(myproc(), tickets);
 }
+
+uint64
+sys_setpriority(void)
+{
+  int priority;
+
+  argint(0, &priority);
+  return sched_set_priority(myproc(), priority);
+}
+
+uint64
+sys_getpinfo(void)
+{
+  uint64 addr;
+
+  argaddr(0, &addr);
+  return getpinfo((struct pstat*)addr);
+}

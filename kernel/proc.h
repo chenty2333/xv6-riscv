@@ -94,6 +94,7 @@ struct proc {
   int tickets;                 // Stride scheduler tickets
   uint64 stride;               // Stride increment for each run
   uint64 pass;                 // Stride scheduler virtual time
+  uint64 sched_count;          // Times this process has been scheduled
 
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process
@@ -110,3 +111,12 @@ struct proc {
 };
 
 extern struct proc proc[NPROC];
+
+struct pstat {
+  int pid;
+  char state;
+  uint64 sched_count;
+  int tickets;
+  uint64 stride;
+  uint64 pass;
+};

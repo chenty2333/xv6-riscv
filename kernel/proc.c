@@ -174,6 +174,7 @@ freeproc(struct proc *p)
   p->tickets = 0;
   p->stride = 0;
   p->pass = 0;
+  p->sched_count = 0;
   p->state = UNUSED;
 }
 
@@ -450,6 +451,7 @@ scheduler(void)
       // before jumping back to us.
       p->state = RUNNING;
       c->proc = p;
+      p->sched_count++;
       swtch(&c->context, &p->context);
 
       // Process is done running for now.
@@ -685,7 +687,30 @@ procdump(void)
       state = states[p->state];
     else
       state = "???";
-    printf("%d %s %s", p->pid, state, p->name);
+    printf("%d %s %s cnt=%lu", p->pid, state, p->name, p->sched_count);
     printf("\n");
   }
+}
+
+int
+getpinfo(struct pstat *ps)
+{
+  struct proc *p;
+  struct pstat kps[NPROC];
+  int i = 0;
+
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    kps[i].pid = p->pid;
+    kps[i].state = p->state;
+    kps[i].sched_count = p->sched_count;
+    kps[i].tickets = p->tickets;
+    kps[i].stride = p->stride;
+    kps[i].pass = p->pass;
+    release(&p->lock);
+    i++;
+  }
+
+  return copyout(myproc()->pagetable, (uint64)ps, (char *)kps,
+                 sizeof(struct pstat) * NPROC);
 }
