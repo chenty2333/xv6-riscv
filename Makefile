@@ -178,7 +178,8 @@ submit:
 		$U/schedtest.c \
 		$U/stridetest.c \
 		$U/usys.pl \
-		$U/user.h
+		$U/user.h \
+		reports/lab4.md
 
 clean:
 	rm -f *.tex *.dvi *.idx *.aux *.log *.ind *.ilg \
