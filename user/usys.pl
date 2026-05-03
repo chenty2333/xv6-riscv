@@ -43,3 +43,5 @@ entry("sbrk");
 entry("pause");
 entry("uptime");
 entry("settickets");
+# LAB ch2.4 TODO: 在这里添加 setpriority 系统调用的 stub。
+# entry("setpriority");

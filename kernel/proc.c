@@ -174,6 +174,8 @@ freeproc(struct proc *p)
   // LAB ch2.1 TODO:
   // 如果你在 struct proc 中加入了 tickets/stride/pass，
   // 请在释放进程时把这些字段清零，避免复用 proc 槽位时带入旧状态。
+  // LAB ch1.4 TODO:
+  // 如果你加入了 sched_count，请在这里清零。
   p->state = UNUSED;
 }
 
@@ -450,6 +452,10 @@ scheduler(void)
       // before jumping back to us.
       p->state = RUNNING;
       c->proc = p;
+
+      // LAB ch1.4 TODO:
+      // 在这里增加 p->sched_count，统计进程被调度的次数。
+
       swtch(&c->context, &p->context);
 
       // Process is done running for now.
@@ -686,6 +692,9 @@ procdump(void)
     else
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
+    // LAB ch1.4 TODO:
+    // 如果你加入了 sched_count，请在这里打印出来。
+    // 格式示例：printf(" cnt=%lu", p->sched_count);
     printf("\n");
   }
 }

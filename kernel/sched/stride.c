@@ -52,6 +52,26 @@ sched_set_tickets(struct proc *p, int tickets)
   return 0;
 }
 
+// LAB ch2.4 TODO:
+// 实现 setpriority 系统调用的内核逻辑。
+// priority 范围是 1-100，将其映射为 tickets。
+// 映射规则：tickets = priority * (SCHED_MAX_TICKETS / 100)。
+// 步骤：
+// 1. 检查 priority 是否在 [1, 100] 范围内，非法返回 -1。
+// 2. 获取 p->lock。
+// 3. 将 priority 映射为 tickets 值。
+// 4. 更新 p->tickets 和 p->stride。
+// 5. 释放 p->lock，返回 0。
+// 提示：参考 sched_set_tickets() 的写法。
+int
+sched_set_priority(struct proc *p, int priority)
+{
+  // TODO ch2.4: 在这里补全你的实现。
+  (void)p;
+  (void)priority;
+  return -1;
+}
+
 // Return a RUNNABLE process with p->lock held, or 0 if none exists.
 struct proc *
 sched_pick_stride(void)

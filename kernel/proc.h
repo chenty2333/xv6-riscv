@@ -102,6 +102,12 @@ struct proc {
   //   uint64 stride;
   //   uint64 pass;
 
+  // LAB ch1.4 TODO:
+  // 在这里加入 sched_count 字段来统计进程被调度的次数。
+  // 可以用来验证 RR 调度是否公平。
+  // 建议字段类型：
+  //   uint64 sched_count;
+
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process
 

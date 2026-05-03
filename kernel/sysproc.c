@@ -117,3 +117,15 @@ sys_settickets(void)
   argint(0, &tickets);
   return sched_set_tickets(myproc(), tickets);
 }
+
+// LAB ch2.4 TODO:
+// 实现 sys_setpriority 系统调用处理函数。
+// 1. 用 argint(0, &priority) 从用户空间获取 priority 参数。
+// 2. 调用 sched_set_priority(myproc(), priority) 并返回其结果。
+// 参考 sys_settickets() 的写法。
+uint64
+sys_setpriority(void)
+{
+  // TODO ch2.4: 补全这里的实现。
+  return -1;
+}

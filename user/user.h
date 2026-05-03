@@ -25,6 +25,8 @@ char* sys_sbrk(int,int);
 int pause(int);
 int uptime(void);
 int settickets(int);
+// LAB ch2.4 TODO: 在这里声明 setpriority 系统调用的用户态接口。
+// int setpriority(int);
 
 // ulib.c
 int stat(const char*, struct stat*);
