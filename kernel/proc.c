@@ -171,11 +171,8 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
-  // LAB ch2.1 TODO:
-  // 如果你在 struct proc 中加入了 tickets/stride/pass，
-  // 请在释放进程时把这些字段清零，避免复用 proc 槽位时带入旧状态。
-  // LAB ch1.4 TODO:
-  // 如果你加入了 sched_count，请在这里清零。
+  // LAB ch2.1: p->tickets = p->stride = p->pass = 0;
+  // LAB ch1.4: p->sched_count = 0;
   p->state = UNUSED;
 }
 
@@ -447,19 +444,10 @@ scheduler(void)
 
     p = sched_pick_next();
     if(p != 0) {
-      // LAB ch1.5 TODO:
-      // 调度器选出一个进程后，需要做四件事才能把 CPU 交给它：
-      // 1. 将进程状态设为 RUNNING。
-      // 2. 记录当前 CPU 正在运行这个进程。
-      // 3. 调用 swtch() 从 CPU 调度上下文切换到进程上下文。
-      //    swtch 的第一个参数是 old context（CPU 的调度上下文），
-      //    第二个参数是 new context（进程的上下文）。
-      //    c->context 和 p->context 分别在 proc.h 的 struct cpu 和 struct proc 中定义。
-      // 4. swtch 返回后（进程让出 CPU），清除 c->proc 并释放 p->lock。
-      //
-      // LAB ch1.4 TODO: 在这里增加 p->sched_count 来统计调度次数。
-      // LAB ch1.5 TODO: 补全状态转换和上下文切换。
-      swtch(/* old */ 0, /* new */ 0);  // 占位，替换为正确的参数
+      // LAB ch1.4: p->sched_count++。
+      // LAB ch1.5: p->state = RUNNING；c->proc = p；swtch(&c->context, &p->context)；
+      //            返回后 c->proc = 0；release(&p->lock)。
+      swtch(0, 0);
     } else {
       // nothing to run; stop running on this core until an interrupt.
       asm volatile("wfi");
@@ -495,18 +483,10 @@ sched(void)
 }
 
 // Give up the CPU for one scheduling round.
-// LAB ch1.6 TODO:
-// 实现 yield()：当前进程主动让出 CPU。
-// 步骤：
-// 1. 获取 myproc() 的锁。
-// 2. 将当前进程状态改为 RUNNABLE。
-// 3. 调用 sched() 切换到调度器。
-// 4. sched() 返回后，释放锁。
-// 提示：参考 sched() 的实现（proc.c），理解 sched() 调用前后锁的状态。
+// LAB ch1.6: acquire(&p->lock)；p->state = RUNNABLE；sched()；release(&p->lock)。
 void
 yield(void)
 {
-  // TODO ch1.6: 在这里补全你的实现。
 }
 
 // A fork child's very first scheduling by scheduler()
@@ -694,30 +674,15 @@ procdump(void)
     else
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
-    // LAB ch1.4 TODO:
-    // 如果你加入了 sched_count，请在这里打印出来。
-    // 格式示例：printf(" cnt=%lu", p->sched_count);
+    // LAB ch1.4: printf(" cnt=%lu", p->sched_count);
     printf("\n");
   }
 }
 
-// LAB ch2.5 TODO:
-// 实现 getpinfo()：遍历 proc[]，将每个进程的调度信息填入 struct pstat 数组。
-// 参数 ps 指向用户空间的 struct pstat 数组（大小为 NPROC）。
-//
-// 你需要：
-// 1. 遍历 proc[] 进程表。
-// 2. 对每个进程，获取 p->lock，读取其调度字段。
-// 3. 将 pid、state、sched_count、tickets、stride、pass 填入 ps[i]。
-// 4. 释放 p->lock。
-// 5. 使用 copyout() 将 ps 数组从内核拷贝到用户空间。
-//    copyout(pagetable_t, uint64 dst, char *src, uint64 len)
-//    需要获取 myproc()->pagetable 作为 pagetable 参数。
-//
-// 提示：参考 procdump() 的实现，但它直接 printf 而不是写入数组。
+// LAB ch2.5: 遍历 proc[]，把每个进程的 pid、state、sched_count、tickets、stride、pass
+// 填入 struct pstat 数组，然后用 copyout() 拷到用户空间。
 int
 getpinfo(struct pstat *ps)
 {
-  // TODO ch2.5: 在这里补全你的实现。
   return -1;
 }

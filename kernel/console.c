@@ -144,10 +144,7 @@ consoleintr(int c)
   acquire(&cons.lock);
 
   switch(c){
-  case C('P'):  // Print process list.
-    // LAB ch1.4 TODO:
-    // 调用 procdump() 打印当前进程列表。
-    // 提示：procdump() 在 kernel/proc.c 中定义。
+  case C('P'):  // LAB ch1.4: 调用 procdump()。
     break;
   case C('U'):  // Kill line.
     while(cons.e != cons.w &&

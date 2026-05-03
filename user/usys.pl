@@ -43,6 +43,5 @@ entry("sbrk");
 entry("pause");
 entry("uptime");
 entry("settickets");
-# LAB ch2.4 TODO: 在这里添加 setpriority 和 getpinfo 系统调用的 stub。
-# entry("setpriority");
-# entry("getpinfo");
+# LAB ch2.4: entry("setpriority");
+# LAB ch2.5: entry("getpinfo");

@@ -118,27 +118,16 @@ sys_settickets(void)
   return sched_set_tickets(myproc(), tickets);
 }
 
-// LAB ch2.4 TODO:
-// 实现 sys_setpriority 系统调用处理函数。
-// 1. 用 argint(0, &priority) 从用户空间获取 priority 参数。
-// 2. 调用 sched_set_priority(myproc(), priority) 并返回其结果。
-// 参考 sys_settickets() 的写法。
+// LAB ch2.4: argint(0, &priority)；调用 sched_set_priority(myproc(), priority)。
 uint64
 sys_setpriority(void)
 {
-  // TODO ch2.4: 补全这里的实现。
   return -1;
 }
 
-// LAB ch2.5 TODO:
-// 实现 sys_getpinfo 系统调用处理函数。
-// 1. 用 argaddr(0, &addr) 获取用户空间的 struct pstat 数组地址。
-// 2. 调用 getpinfo((struct pstat*)addr) 填充数据并拷贝到用户空间。
-// 3. 返回 0 表示成功，-1 表示失败。
-// 提示：参考 getpinfo() 在 kernel/proc.c 中的实现。
+// LAB ch2.5: argaddr(0, &addr)；调用 getpinfo((struct pstat*)addr)。
 uint64
 sys_getpinfo(void)
 {
-  // TODO ch2.5: 补全这里的实现。
   return -1;
 }

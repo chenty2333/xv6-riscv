@@ -6,13 +6,10 @@
 #include "defs.h"
 #include "sched.h"
 
+// LAB ch2.2a: stride = STRIDE_BIG / tickets（tickets 保证 > 0）。
 static uint64
 stride_for_tickets(int tickets)
 {
-  // LAB ch2.2 TODO:
-  // 根据 tickets 计算 stride。
-  // 规则：stride = STRIDE_BIG / tickets。
-  // 注意 tickets 必须大于 0，调用者应该先完成参数检查。
   (void)tickets;
   return STRIDE_BIG;
 }
@@ -22,81 +19,53 @@ sched_stride_init(void)
 {
 }
 
+// LAB ch2.1: tickets = SCHED_DEFAULT_TICKETS；stride = stride_for_tickets(tickets)；pass = 0。
 void
 sched_init_proc(struct proc *p)
 {
-  // LAB ch2.1 TODO:
-  // 新进程创建时需要初始化 stride 调度字段：
-  // 1. tickets 设置为 SCHED_DEFAULT_TICKETS。
-  // 2. stride 根据 tickets 计算。
-  // 3. pass 设置为 0。
-  // 这些字段需要你先添加到 struct proc 中。
   (void)p;
 }
 
+// LAB ch2.2b: 加锁 → 更新 tickets 和 stride → 解锁（不改 pass）。
 int
 sched_set_tickets(struct proc *p, int tickets)
 {
   if(tickets < 1 || tickets > SCHED_MAX_TICKETS)
     return -1;
 
-  // LAB ch2.2 TODO:
-  // 完成 settickets 的内核逻辑：
-  // 1. 参数检查已经在上面给出，非法 tickets 返回 -1。
-  // 2. 获取 p->lock 后更新 p->tickets。
-  // 3. 使用 stride_for_tickets(tickets) 更新 p->stride。
-  // 4. 释放 p->lock 并返回 0。
-  // 提示：这里不需要修改 p->pass。
   (void)p;
   (void)stride_for_tickets(tickets);
   return 0;
 }
 
-// LAB ch2.4 TODO:
-// 实现 setpriority 系统调用的内核逻辑。
-// priority 范围是 1-100，将其映射为 tickets。
-// 映射规则：tickets = priority * (SCHED_MAX_TICKETS / 100)。
-// 步骤：
-// 1. 检查 priority 是否在 [1, 100] 范围内，非法返回 -1。
-// 2. 获取 p->lock。
-// 3. 将 priority 映射为 tickets 值。
-// 4. 更新 p->tickets 和 p->stride。
-// 5. 释放 p->lock，返回 0。
-// 提示：参考 sched_set_tickets() 的写法。
+// LAB ch2.4: priority [1,100] 映射为 tickets = priority * (SCHED_MAX_TICKETS/100)。
+// 检查范围 → 加锁 → 更新 tickets 和 stride → 解锁。
+// 参考 sched_set_tickets()。
 int
 sched_set_priority(struct proc *p, int priority)
 {
-  // TODO ch2.4: 在这里补全你的实现。
   (void)p;
   (void)priority;
   return -1;
 }
 
-// LAB ch2.3a TODO:
-// 扫描 proc[] 进程表，找到 pass 最小的 RUNNABLE 进程。
-// 返回时持有该进程的 p->lock；如果没有 RUNNABLE 进程，返回 0。
-// 锁规则：选中的进程保持锁，没选中的必须 release(&p->lock)。
-// 比较规则：pass 小的优先；pass 相同时 pid 小的优先。
+// LAB ch2.3a: 扫描 proc[]，选 pass 最小的 RUNNABLE 进程。
+// 返回时持有 p->lock；没选中的 release(&p->lock)；无 RUNNABLE 返回 0。
+// pass 相同时 pid 小的优先。
 static struct proc *
 sched_scan_best(void)
 {
-  // 当前占位实现退回 RR，让你未完成 ch2 时系统仍能启动。
   return sched_pick_rr();
 }
 
-// LAB ch2.3b TODO:
-// 对选中的进程执行 pass 更新：best->pass += best->stride。
-// 你只需补全这一行，不需要操作锁。
+// LAB ch2.3b: best->pass += best->stride。
 static void
 sched_commit(struct proc *best)
 {
   if(best == 0)
     return;
-  // TODO ch2.3b: 在这里更新 best->pass。
 }
 
-// sched_pick_stride：扫描 + 更新，不修改这部分的逻辑。
-// Return a RUNNABLE process with p->lock held, or 0 if none exists.
 struct proc *
 sched_pick_stride(void)
 {

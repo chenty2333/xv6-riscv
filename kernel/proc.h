@@ -92,21 +92,8 @@ struct proc {
   int xstate;                  // Exit status to be returned to parent's wait
   int pid;                     // Process ID
 
-  // LAB ch2.1 TODO:
-  // 在这里加入 stride 调度需要的三个字段：
-  // 1. tickets：当前进程拥有的票数，票数越多，应该获得越多 CPU 时间。
-  // 2. stride：每次被选中运行后，pass 应该增加的步长。
-  // 3. pass：当前进程的虚拟时间，stride 调度每次选择 pass 最小的进程。
-  // 建议字段类型：
-  //   int tickets;
-  //   uint64 stride;
-  //   uint64 pass;
-
-  // LAB ch1.4 TODO:
-  // 在这里加入 sched_count 字段来统计进程被调度的次数。
-  // 可以用来验证 RR 调度是否公平。
-  // 建议字段类型：
-  //   uint64 sched_count;
+  // LAB ch2.1: int tickets; uint64 stride; uint64 pass;
+  // LAB ch1.4: uint64 sched_count;
 
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process

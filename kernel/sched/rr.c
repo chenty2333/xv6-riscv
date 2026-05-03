@@ -24,28 +24,21 @@ sched_pick_rr(void)
   int i;
   int idx;
 
-  acquire(&rr_lock);
+  // LAB ch1.2: 实现 Round-Robin 扫描。
+  // 1. 获取 rr_lock（保护 rr_next）。
+  // 2. 从 rr_next 开始：idx = (rr_next + i) % NPROC。
+  // 3. 对每个进程 acquire(&p->lock) 后检查 p->state == RUNNABLE。
+  // 4. 找到后：更新 rr_next = (idx + 1) % NPROC，释放 rr_lock，返回 p（持有锁）。
+  // 5. 未选中的必须 release(&p->lock)。
+  // 6. 全表无 RUNNABLE 则释放 rr_lock，返回 0。
+  //
+  // 当前占位实现：每次都从 0 开始扫描，未更新游标。
   for(i = 0; i < NPROC; i++) {
-    // LAB ch1.2 TODO:
-    // 当前占位实现每轮都从 proc[0] 开始扫描，会偏向进程表前面的进程。
-    // 请改成真正的 round-robin：
-    // 1. 从 rr_next 开始扫描，而不是从 0 开始。
-    // 2. 用取模把扫描范围限制在 [0, NPROC)。
-    // 3. 计算出的 idx 应该表示本次要检查的 proc 下标。
     idx = i;
     p = &proc[idx];
-
-    acquire(&p->lock);
-    if(p->state == RUNNABLE) {
-      // LAB ch1.2 TODO:
-      // 找到可运行进程后，更新 rr_next。
-      // 下一次调度应该从当前进程的下一个位置开始，避免一直选择同一个低下标进程。
-      release(&rr_lock);
+    if(p->state == RUNNABLE)
       return p;
-    }
-    release(&p->lock);
   }
-  release(&rr_lock);
 
   return 0;
 }

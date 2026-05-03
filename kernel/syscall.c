@@ -102,10 +102,8 @@ extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_settickets(void);
-// LAB ch2.4 TODO: 在这里声明 sys_setpriority 的外部函数原型。
-// 格式：extern uint64 sys_setpriority(void);
-// LAB ch2.5 TODO: 在这里声明 sys_getpinfo 的外部函数原型。
-// 格式：extern uint64 sys_getpinfo(void);
+// LAB ch2.4: extern uint64 sys_setpriority(void);
+// LAB ch2.5: extern uint64 sys_getpinfo(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -132,10 +130,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
 [SYS_settickets] sys_settickets,
-  // LAB ch2.4 TODO: 在这里注册 SYS_setpriority 到 sys_setpriority。
-  // 格式：[SYS_setpriority] sys_setpriority,
-  // LAB ch2.5 TODO: 在这里注册 SYS_getpinfo 到 sys_getpinfo。
-  // 格式：[SYS_getpinfo] sys_getpinfo,
+  // LAB ch2.4: [SYS_setpriority] sys_setpriority,
+  // LAB ch2.5: [SYS_getpinfo] sys_getpinfo,
 };
 
 void

@@ -21,7 +21,5 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_settickets 22
-// LAB ch2.4 TODO: 在这里添加 SYS_setpriority 的系统调用号。
-// 例如：#define SYS_setpriority 23
-// LAB ch2.5 TODO: 在这里添加 SYS_getpinfo 的系统调用号。
-// 例如：#define SYS_getpinfo 24
+// LAB ch2.4: #define SYS_setpriority 23
+// LAB ch2.5: #define SYS_getpinfo 24
