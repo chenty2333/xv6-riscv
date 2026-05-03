@@ -123,3 +123,13 @@ struct proc {
 };
 
 extern struct proc proc[NPROC];
+
+struct pstat {
+  int pid;
+  char state;
+  uint64 sched_count;
+  int tickets;
+  uint64 stride;
+  uint64 pass;
+};
+

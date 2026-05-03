@@ -27,6 +27,9 @@ int uptime(void);
 int settickets(int);
 // LAB ch2.4 TODO: 在这里声明 setpriority 系统调用的用户态接口。
 // int setpriority(int);
+// LAB ch2.5 TODO: 在这里声明 getpinfo 和 struct pstat。
+// struct pstat { int pid; char state; uint64 sched_count; int tickets; uint64 stride; uint64 pass; };
+// int getpinfo(struct pstat*);
 
 // ulib.c
 int stat(const char*, struct stat*);

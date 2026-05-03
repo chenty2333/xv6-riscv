@@ -129,3 +129,16 @@ sys_setpriority(void)
   // TODO ch2.4: 补全这里的实现。
   return -1;
 }
+
+// LAB ch2.5 TODO:
+// 实现 sys_getpinfo 系统调用处理函数。
+// 1. 用 argaddr(0, &addr) 获取用户空间的 struct pstat 数组地址。
+// 2. 调用 getpinfo((struct pstat*)addr) 填充数据并拷贝到用户空间。
+// 3. 返回 0 表示成功，-1 表示失败。
+// 提示：参考 getpinfo() 在 kernel/proc.c 中的实现。
+uint64
+sys_getpinfo(void)
+{
+  // TODO ch2.5: 补全这里的实现。
+  return -1;
+}

@@ -495,14 +495,18 @@ sched(void)
 }
 
 // Give up the CPU for one scheduling round.
+// LAB ch1.6 TODO:
+// 实现 yield()：当前进程主动让出 CPU。
+// 步骤：
+// 1. 获取 myproc() 的锁。
+// 2. 将当前进程状态改为 RUNNABLE。
+// 3. 调用 sched() 切换到调度器。
+// 4. sched() 返回后，释放锁。
+// 提示：参考 sched() 的实现（proc.c），理解 sched() 调用前后锁的状态。
 void
 yield(void)
 {
-  struct proc *p = myproc();
-  acquire(&p->lock);
-  p->state = RUNNABLE;
-  sched();
-  release(&p->lock);
+  // TODO ch1.6: 在这里补全你的实现。
 }
 
 // A fork child's very first scheduling by scheduler()
@@ -695,4 +699,25 @@ procdump(void)
     // 格式示例：printf(" cnt=%lu", p->sched_count);
     printf("\n");
   }
+}
+
+// LAB ch2.5 TODO:
+// 实现 getpinfo()：遍历 proc[]，将每个进程的调度信息填入 struct pstat 数组。
+// 参数 ps 指向用户空间的 struct pstat 数组（大小为 NPROC）。
+//
+// 你需要：
+// 1. 遍历 proc[] 进程表。
+// 2. 对每个进程，获取 p->lock，读取其调度字段。
+// 3. 将 pid、state、sched_count、tickets、stride、pass 填入 ps[i]。
+// 4. 释放 p->lock。
+// 5. 使用 copyout() 将 ps 数组从内核拷贝到用户空间。
+//    copyout(pagetable_t, uint64 dst, char *src, uint64 len)
+//    需要获取 myproc()->pagetable 作为 pagetable 参数。
+//
+// 提示：参考 procdump() 的实现，但它直接 printf 而不是写入数组。
+int
+getpinfo(struct pstat *ps)
+{
+  // TODO ch2.5: 在这里补全你的实现。
+  return -1;
 }

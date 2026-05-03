@@ -166,6 +166,7 @@ submit:
 	tar czf submit.tar.gz \
 		$K/arch/riscv/swtch.S \
 		$K/console.c \
+		$K/defs.h \
 		$K/sched/rr.c \
 		$K/sched/stride.c \
 		$K/sched/sched.h \
