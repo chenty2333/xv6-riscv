@@ -25,8 +25,8 @@ char* sys_sbrk(int,int);
 int pause(int);
 int uptime(void);
 int settickets(int);
-// LAB ch2.4: 声明 setpriority() 函数。
-// LAB ch2.5: 定义 struct pstat，声明 getpinfo()。
+// LAB ch2: 声明 setpriority() 函数。
+// LAB ch2: 定义 struct pstat，声明 getpinfo()。
 
 // ulib.c
 int stat(const char*, struct stat*);

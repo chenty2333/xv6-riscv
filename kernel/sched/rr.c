@@ -24,7 +24,7 @@ sched_pick_rr(void)
   int i;
   int idx;
 
-  // LAB ch1.2: 实现 Round-Robin 扫描。
+  // LAB ch1: 实现 Round-Robin 扫描。
   // 1. 获取 rr_lock（保护 rr_next）。
   // 2. 从 rr_next 开始：idx = (rr_next + i) % NPROC。
   // 3. 对每个进程 acquire(&p->lock) 后检查 p->state == RUNNABLE。

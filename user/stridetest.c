@@ -30,7 +30,7 @@ worker(int id, int fd)
   r.loops = 0;
   start = uptime();
 
-  // LAB ch2.3a: CPU-bound 忙循环，r.loops++。
+  // LAB ch2: CPU-bound 忙循环，r.loops++。
   while(uptime() - start < RUN_TICKS) {
     // TODO
   }
@@ -44,7 +44,7 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
-  // LAB ch2.3b: 创建子进程、收集结果、验证 1:2:4 比例。
+  // LAB ch2: 创建子进程、收集结果、验证 1:2:4 比例。
   // 1. 用 pipe() 创建管道。
   // 2. 用 fork() 创建 CHILDREN 个子进程，tickets = 1, 2, 4。
   // 3. 父进程关闭写端，从管道读取 CHILDREN 个 struct result。
@@ -52,7 +52,7 @@ main(int argc, char *argv[])
   // 5. 如果 loops[0] < loops[1] < loops[2]，打印 "stridetest: PASS"，exit(0)，
   //    否则 exit(1)。
 
-  // LAB ch2.3b
+  // LAB ch2
 
   exit(1);
 }

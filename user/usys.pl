@@ -43,5 +43,5 @@ entry("sbrk");
 entry("pause");
 entry("uptime");
 entry("settickets");
-# LAB ch2.4: 添加 setpriority 的 entry。
-# LAB ch2.5: 添加 getpinfo 的 entry。
+# LAB ch2: 添加 setpriority 的 entry。
+# LAB ch2: 添加 getpinfo 的 entry。

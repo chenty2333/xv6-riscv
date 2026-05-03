@@ -21,7 +21,7 @@ worker(int id, int fd)
   r.loops = 0;
   start = uptime();
 
-  // LAB ch1.3a: CPU-bound 忙循环，r.loops++。
+  // LAB ch1: CPU-bound 忙循环，r.loops++。
   while(uptime() - start < RUN_TICKS) {
     // TODO
   }
@@ -35,7 +35,7 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
-  // LAB ch1.3b: pipe → fork(CHILDREN) → 父进程读 pipe → 打印结果 → wait → PASS/FAIL。
+  // LAB ch1: pipe → fork(CHILDREN) → 父进程读 pipe → 打印结果 → wait → PASS/FAIL。
 
   exit(1);
 }

@@ -92,8 +92,8 @@ struct proc {
   int xstate;                  // Exit status to be returned to parent's wait
   int pid;                     // Process ID
 
-  // LAB ch2.1: 添加 tickets、stride、pass 字段。
-  // LAB ch1.4: 添加 sched_count 字段。
+  // LAB ch2: 添加 tickets、stride、pass 字段。
+  // LAB ch1: 添加 sched_count 字段。
 
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process

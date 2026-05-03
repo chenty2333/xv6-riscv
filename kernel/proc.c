@@ -171,8 +171,8 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
-  // LAB ch2.1: 清零 tickets、stride、pass。
-  // LAB ch1.4: 清零 sched_count。
+  // LAB ch2: 清零 tickets、stride、pass。
+  // LAB ch1: 清零 sched_count。
   p->state = UNUSED;
 }
 
@@ -444,8 +444,8 @@ scheduler(void)
 
     p = sched_pick_next();
     if(p != 0) {
-      // LAB ch1.4: 递增该进程的调度计数。
-      // LAB ch1.5: 将进程状态设为 RUNNING；记录 c->proc；用 swtch 切换到进程上下文；
+      // LAB ch1: 递增该进程的调度计数。
+      // LAB ch1: 将进程状态设为 RUNNING；记录 c->proc；用 swtch 切换到进程上下文；
       //            swtch 返回后清除 c->proc 并释放 p->lock。
       swtch(0, 0);
     } else {
@@ -483,7 +483,7 @@ sched(void)
 }
 
 // Give up the CPU for one scheduling round.
-// LAB ch1.6: 获取当前进程的锁，将状态改为 RUNNABLE，调用 sched()，返回后释放锁。
+// LAB ch1: 获取当前进程的锁，将状态改为 RUNNABLE，调用 sched()，返回后释放锁。
 void
 yield(void)
 {
@@ -674,12 +674,12 @@ procdump(void)
     else
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
-    // LAB ch1.4: 打印 sched_count。
+    // LAB ch1: 打印 sched_count。
     printf("\n");
   }
 }
 
-// LAB ch2.5: 遍历 proc[]，把每个进程的 pid、state、sched_count、tickets、stride、pass
+// LAB ch2: 遍历 proc[]，把每个进程的 pid、state、sched_count、tickets、stride、pass
 // 填入 struct pstat 数组，然后用 copyout() 拷到用户空间。
 int
 getpinfo(struct pstat *ps)
