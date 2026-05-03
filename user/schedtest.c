@@ -21,13 +21,10 @@ worker(int id, int fd)
   r.loops = 0;
   start = uptime();
 
-  // LAB ch1.3 TODO:
-  // 这里需要让子进程在 RUN_TICKS 个时钟 tick 内持续占用 CPU。
-  // 每循环一次就增加 r.loops，用来观察不同子进程是否都获得了运行机会。
-  // 当前占位代码会很快退出，schedtest 不会通过。
+  // LAB ch1.3a TODO:
+  // 实现 CPU-bound 忙循环：在 RUN_TICKS 个 tick 内持续累加 r.loops。
   while(uptime() - start < RUN_TICKS) {
-    // TODO: r.loops++;
-    break;
+    // TODO
   }
 
   r.elapsed = uptime() - start;
@@ -39,39 +36,18 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
-  int p[2];
-  int i;
-  int pid;
+  // LAB ch1.3b TODO:
+  // 创建测试子进程，收集它们的运行结果：
+  // 1. 用 pipe() 创建一个管道。
+  // 2. 用 fork() 创建 CHILDREN 个子进程，每个子进程执行 worker(i, p[1])。
+  // 3. 父进程关闭写端，从管道读取 CHILDREN 个 struct result。
+  // 4. 打印每个子进程的 id、elapsed、loops。
+  // 5. wait() 回收所有子进程。
+  // 6. 如果三个子进程的 loops 都 > 0，打印 "schedtest: PASS"，exit(0)，
+  //    否则 exit(1)。
+  // 提示：参考 xv6 中 pipe 和 fork 的标准用法（如 user/sh.c）。
 
-  if(pipe(p) < 0) {
-    fprintf(2, "schedtest: pipe failed\n");
-    exit(1);
-  }
-
-  for(i = 0; i < CHILDREN; i++) {
-    pid = fork();
-    if(pid < 0) {
-      fprintf(2, "schedtest: fork failed\n");
-      exit(1);
-    }
-    if(pid == 0) {
-      close(p[0]);
-      worker(i, p[1]);
-    }
-  }
-
-  close(p[1]);
-  printf("schedtest: %d cpu-bound children, %d ticks\n", CHILDREN, RUN_TICKS);
-
-  // LAB ch1.3 TODO:
-  // 父进程需要从 pipe 读取 CHILDREN 个 struct result。
-  // 每读取一个结果，就打印 child id、elapsed 和 loops。
-  // 最后可以检查每个 child 的 loops 都大于 0，确认多个 CPU-bound 进程都运行过。
-  printf("schedtest: TODO collect child results\n");
-
-  close(p[0]);
-  for(i = 0; i < CHILDREN; i++)
-    wait(0);
+  // TODO ch1.3b: 在这里补全你的实现。
 
   exit(1);
 }

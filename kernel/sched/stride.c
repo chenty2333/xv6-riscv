@@ -72,24 +72,35 @@ sched_set_priority(struct proc *p, int priority)
   return -1;
 }
 
+// LAB ch2.3a TODO:
+// 扫描 proc[] 进程表，找到 pass 最小的 RUNNABLE 进程。
+// 返回时持有该进程的 p->lock；如果没有 RUNNABLE 进程，返回 0。
+// 锁规则：选中的进程保持锁，没选中的必须 release(&p->lock)。
+// 比较规则：pass 小的优先；pass 相同时 pid 小的优先。
+static struct proc *
+sched_scan_best(void)
+{
+  // 当前占位实现退回 RR，让你未完成 ch2 时系统仍能启动。
+  return sched_pick_rr();
+}
+
+// LAB ch2.3b TODO:
+// 对选中的进程执行 pass 更新：best->pass += best->stride。
+// 你只需补全这一行，不需要操作锁。
+static void
+sched_commit(struct proc *best)
+{
+  if(best == 0)
+    return;
+  // TODO ch2.3b: 在这里更新 best->pass。
+}
+
+// sched_pick_stride：扫描 + 更新，不修改这部分的逻辑。
 // Return a RUNNABLE process with p->lock held, or 0 if none exists.
 struct proc *
 sched_pick_stride(void)
 {
-  // LAB ch2.3 TODO:
-  // 实现 stride 调度的进程选择逻辑。
-  // 目标：返回一个 RUNNABLE 进程，并且返回时保持该进程的 p->lock 已经持有。
-  //
-  // 建议步骤：
-  // 1. 扫描 proc[] 进程表。
-  // 2. 对每个进程先 acquire(&p->lock)，检查 p->state 是否为 RUNNABLE。
-  // 3. 在所有 RUNNABLE 进程中选择 pass 最小的进程。
-  // 4. 如果两个进程 pass 相同，可以用 pid 小的进程作为 tie-break。
-  // 5. 没被选中的进程必须及时 release(&p->lock)。
-  // 6. 选中 best 后，执行 best->pass += best->stride。
-  // 7. 返回 best；如果没有 RUNNABLE 进程，返回 0。
-  //
-  // 当前占位实现退回 RR，只是为了让未完成 ch2 时系统仍然能启动。
-  // 完成 ch2.3 后，请删除这一行并实现上面的逻辑。
-  return sched_pick_rr();
+  struct proc *best = sched_scan_best();
+  sched_commit(best);
+  return best;
 }

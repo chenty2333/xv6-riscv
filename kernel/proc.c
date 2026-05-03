@@ -447,21 +447,19 @@ scheduler(void)
 
     p = sched_pick_next();
     if(p != 0) {
-      // Switch to chosen process.  It is the process's job
-      // to release its lock and then reacquire it
-      // before jumping back to us.
-      p->state = RUNNING;
-      c->proc = p;
-
-      // LAB ch1.4 TODO:
-      // 在这里增加 p->sched_count，统计进程被调度的次数。
-
-      swtch(&c->context, &p->context);
-
-      // Process is done running for now.
-      // It should have changed its p->state before coming back.
-      c->proc = 0;
-      release(&p->lock);
+      // LAB ch1.5 TODO:
+      // 调度器选出一个进程后，需要做四件事才能把 CPU 交给它：
+      // 1. 将进程状态设为 RUNNING。
+      // 2. 记录当前 CPU 正在运行这个进程。
+      // 3. 调用 swtch() 从 CPU 调度上下文切换到进程上下文。
+      //    swtch 的第一个参数是 old context（CPU 的调度上下文），
+      //    第二个参数是 new context（进程的上下文）。
+      //    c->context 和 p->context 分别在 proc.h 的 struct cpu 和 struct proc 中定义。
+      // 4. swtch 返回后（进程让出 CPU），清除 c->proc 并释放 p->lock。
+      //
+      // LAB ch1.4 TODO: 在这里增加 p->sched_count 来统计调度次数。
+      // LAB ch1.5 TODO: 补全状态转换和上下文切换。
+      swtch(/* old */ 0, /* new */ 0);  // 占位，替换为正确的参数
     } else {
       // nothing to run; stop running on this core until an interrupt.
       asm volatile("wfi");
