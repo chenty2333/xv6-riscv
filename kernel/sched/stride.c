@@ -6,7 +6,7 @@
 #include "defs.h"
 #include "sched.h"
 
-// LAB ch2.2a: stride = STRIDE_BIG / tickets（tickets 保证 > 0）。
+// LAB ch2.2a: 根据 tickets 计算 stride（STRIDE_BIG / tickets）。
 static uint64
 stride_for_tickets(int tickets)
 {
@@ -19,7 +19,7 @@ sched_stride_init(void)
 {
 }
 
-// LAB ch2.1: tickets = SCHED_DEFAULT_TICKETS；stride = stride_for_tickets(tickets)；pass = 0。
+// LAB ch2.1: 初始化 tickets 为默认值，stride 根据 tickets 计算，pass 为 0。
 void
 sched_init_proc(struct proc *p)
 {
@@ -38,9 +38,7 @@ sched_set_tickets(struct proc *p, int tickets)
   return 0;
 }
 
-// LAB ch2.4: priority [1,100] 映射为 tickets = priority * (SCHED_MAX_TICKETS/100)。
-// 检查范围 → 加锁 → 更新 tickets 和 stride → 解锁。
-// 参考 sched_set_tickets()。
+// LAB ch2.4: 检查 priority 范围 [1,100]，映射为 tickets，加锁更新，返回 0 或 -1。
 int
 sched_set_priority(struct proc *p, int priority)
 {
@@ -58,7 +56,7 @@ sched_scan_best(void)
   return sched_pick_rr();
 }
 
-// LAB ch2.3b: best->pass += best->stride。
+// LAB ch2.3b: 更新 best 的 pass（pass += stride）。
 static void
 sched_commit(struct proc *best)
 {
