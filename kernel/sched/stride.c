@@ -38,15 +38,6 @@ sched_set_tickets(struct proc *p, int tickets)
   return 0;
 }
 
-// LAB ch2: 检查 priority 范围 [1,100]，映射为 tickets，加锁更新，返回 0 或 -1。
-int
-sched_set_priority(struct proc *p, int priority)
-{
-  (void)p;
-  (void)priority;
-  return -1;
-}
-
 // LAB ch2: 扫描 proc[]，选 pass 最小的 RUNNABLE 进程。
 // 返回时持有 p->lock；没选中的 release(&p->lock)；无 RUNNABLE 返回 0。
 // pass 相同时 pid 小的优先。

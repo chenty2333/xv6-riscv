@@ -118,13 +118,6 @@ sys_settickets(void)
   return sched_set_tickets(myproc(), tickets);
 }
 
-// LAB ch2: 取出 priority 参数，调用 sched_set_priority()。
-uint64
-sys_setpriority(void)
-{
-  return -1;
-}
-
 // LAB ch2: 取出用户空间地址，调用 getpinfo()。
 uint64
 sys_getpinfo(void)

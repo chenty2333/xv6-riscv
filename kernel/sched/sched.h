@@ -19,7 +19,6 @@ schedinit(void)
 
 void sched_init_proc(struct proc *p);
 int sched_set_tickets(struct proc *p, int tickets);
-int sched_set_priority(struct proc *p, int priority);
 
 struct proc *sched_pick_rr(void);
 struct proc *sched_pick_stride(void);
