@@ -40,20 +40,6 @@ sched_set_tickets(struct proc *p, int tickets)
   return 0;
 }
 
-int
-sched_set_priority(struct proc *p, int priority)
-{
-  if(priority < 1 || priority > 100)
-    return -1;
-
-  int tickets = priority * (SCHED_MAX_TICKETS / 100);
-  acquire(&p->lock);
-  p->tickets = tickets;
-  p->stride = stride_for_tickets(tickets);
-  release(&p->lock);
-  return 0;
-}
-
 static struct proc *
 sched_scan_best(void)
 {

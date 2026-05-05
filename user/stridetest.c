@@ -1,4 +1,5 @@
 #include "kernel/types.h"
+#include "kernel/param.h"
 #include "kernel/stat.h"
 #include "user/user.h"
 
@@ -13,6 +14,43 @@ struct result {
 };
 
 static int tickets[CHILDREN] = { 1, 2, 4 };
+
+static int
+check_pinfo(int pids[CHILDREN])
+{
+  struct pstat ps[NPROC];
+  int seen[CHILDREN];
+  int i, j;
+
+  memset(seen, 0, sizeof(seen));
+
+  if(getpinfo(ps) < 0) {
+    fprintf(2, "stridetest: getpinfo failed\n");
+    return -1;
+  }
+
+  for(i = 0; i < NPROC; i++) {
+    for(j = 0; j < CHILDREN; j++) {
+      if(ps[i].pid == pids[j]) {
+        if(ps[i].tickets != tickets[j]) {
+          fprintf(2, "stridetest: pid %d tickets=%d want %d\n",
+                  pids[j], ps[i].tickets, tickets[j]);
+          return -1;
+        }
+        seen[j] = 1;
+      }
+    }
+  }
+
+  for(i = 0; i < CHILDREN; i++) {
+    if(!seen[i]) {
+      fprintf(2, "stridetest: pid %d missing from getpinfo\n", pids[i]);
+      return -1;
+    }
+  }
+
+  return 0;
+}
 
 static void
 worker(int id, int fd)
@@ -45,6 +83,7 @@ main(int argc, char *argv[])
   int p[2];
   int i;
   int pid;
+  int pids[CHILDREN];
   struct result r;
   uint64 loops[CHILDREN];
 
@@ -65,6 +104,7 @@ main(int argc, char *argv[])
       close(p[0]);
       worker(i, p[1]);
     }
+    pids[i] = pid;
   }
 
   close(p[1]);
@@ -80,6 +120,9 @@ main(int argc, char *argv[])
   }
 
   close(p[0]);
+  if(check_pinfo(pids) < 0)
+    exit(1);
+
   for(i = 0; i < CHILDREN; i++)
     wait(0);
 

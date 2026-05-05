@@ -119,15 +119,6 @@ sys_settickets(void)
 }
 
 uint64
-sys_setpriority(void)
-{
-  int priority;
-
-  argint(0, &priority);
-  return sched_set_priority(myproc(), priority);
-}
-
-uint64
 sys_getpinfo(void)
 {
   uint64 addr;
