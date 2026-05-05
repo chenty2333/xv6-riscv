@@ -444,9 +444,9 @@ scheduler(void)
 
     p = sched_pick_next();
     if(p != 0) {
-      // LAB ch1: 递增该进程的调度计数。
-      // LAB ch1: 将进程状态设为 RUNNING；记录 c->proc；用 swtch 切换到进程上下文；
-      //            swtch 返回后清除 c->proc 并释放 p->lock。
+      // LAB ch1: 完成 scheduler -> process 的切换协议。
+      // 进入这里时 p->lock 已由 sched_pick_next() 持有；切换前需要更新
+      // 进程状态和当前 CPU，切回后清理 CPU 状态并释放 p->lock。
       swtch(0, 0);
     } else {
       // nothing to run; stop running on this core until an interrupt.
@@ -483,7 +483,8 @@ sched(void)
 }
 
 // Give up the CPU for one scheduling round.
-// LAB ch1: 获取当前进程的锁，将状态改为 RUNNABLE，调用 sched()，返回后释放锁。
+// LAB ch1: 当前进程主动回到 scheduler。调用 sched() 前必须持有
+// p->lock，并且不能继续保持 RUNNING 状态；返回后释放 p->lock。
 void
 yield(void)
 {
@@ -679,8 +680,7 @@ procdump(void)
   }
 }
 
-// LAB ch2: 遍历 proc[]，把每个进程的 pid、state、sched_count、tickets、stride、pass
-// 填入 struct pstat 数组，然后用 copyout() 拷到用户空间。
+// LAB ch2: 将 proc[] 的调度状态拷贝到用户提供的 struct pstat 数组。
 int
 getpinfo(struct pstat *ps)
 {

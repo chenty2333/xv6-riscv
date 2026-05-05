@@ -35,7 +35,8 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
-  // LAB ch1: pipe → fork(CHILDREN) → 父进程读 pipe → 打印结果 → wait → PASS/FAIL。
+  // LAB ch1: pipe -> fork -> read -> wait，收集 CHILDREN 个 CPU-bound
+  // 子进程的结果并打印；所有子进程能完成即可 PASS。
 
   exit(1);
 }
