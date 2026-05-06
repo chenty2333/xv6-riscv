@@ -147,6 +147,7 @@ UPROGS=\
 	$U/_rm\
 	$U/_sh\
 	$U/_schedtest\
+	$U/_schedtrace\
 	$U/_stressfs\
 	$U/_stridetest\
 	$U/_usertests\

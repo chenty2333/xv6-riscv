@@ -11,7 +11,7 @@ struct result {
   uint64 loops;
 };
 
-static void
+void
 worker(int id, int fd)
 {
   struct result r;
@@ -35,8 +35,9 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
-  // LAB ch1: pipe -> fork -> read -> wait，收集 CHILDREN 个 CPU-bound
-  // 子进程的结果并打印；所有子进程能完成即可 PASS。
+  // LAB ch1: 本程序是唯一需要你完整补全 pipe -> fork -> read -> wait
+  // 结构的地方。收集 CHILDREN 个 CPU-bound 子进程的结果并打印；
+  // 所有子进程能完成即可 PASS。
 
   exit(1);
 }

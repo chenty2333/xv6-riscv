@@ -15,19 +15,19 @@ struct result {
 
 static int tickets[CHILDREN] = { 1, 2, 4 };
 
-static int
+int
 check_pinfo(int pids[CHILDREN])
 {
   struct pstat ps[NPROC];
 
-  // LAB ch2: 调用 getpinfo(ps)，在 ps[] 中找到每个子进程 pid，
-  // 检查内核记录的 tickets 是否分别为 1、2、4。
+  // LAB ch2: 复用 ch1 的进程创建和结果收集结构；这里重点是调用
+  // getpinfo(ps)，在 ps[] 中找到每个子进程 pid，并检查 tickets。
   (void)pids;
   (void)ps;
   return -1;
 }
 
-static void
+void
 worker(int id, int fd)
 {
   struct result r;
@@ -57,8 +57,8 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
-  // LAB ch2: pipe -> fork -> read -> getpinfo -> wait，创建 tickets 为
-  // 1、2、4 的 CPU-bound 子进程，收集结果并检查调度比例和 pinfo 状态。
+  // LAB ch2: 创建 tickets 为 1、2、4 的 CPU-bound 子进程。不要把这里
+  // 当作第二个 pipe 练习；重点是 tickets、getpinfo 和比例检查。
 
   // LAB ch2
 

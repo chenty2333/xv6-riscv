@@ -21,4 +21,4 @@
 #define SYS_mkdir  20
 #define SYS_close  21
 #define SYS_settickets 22
-// LAB ch2: 添加 SYS_getpinfo 的系统调用号。
+#define SYS_getpinfo 23

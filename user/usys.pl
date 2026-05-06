@@ -43,4 +43,4 @@ entry("sbrk");
 entry("pause");
 entry("uptime");
 entry("settickets");
-# LAB ch2: 添加 getpinfo 的 entry。
+entry("getpinfo");

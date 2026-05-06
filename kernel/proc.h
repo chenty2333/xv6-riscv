@@ -111,4 +111,13 @@ struct proc {
 
 extern struct proc proc[NPROC];
 
-// LAB ch2: 定义 getpinfo() 返回给用户态的 struct pstat。
+// getpinfo() copies one snapshot of each process into this user-visible shape.
+// Keep the layout identical to user/user.h.
+struct pstat {
+  int pid;
+  char state;
+  uint64 sched_count;
+  int tickets;
+  uint64 stride;
+  uint64 pass;
+};
