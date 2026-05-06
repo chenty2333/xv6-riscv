@@ -24,6 +24,7 @@ sched_pick_rr(void)
   int i;
   int idx;
 
+  // LAB ch1: 从 rr_next 开始做 Round-Robin 扫描。
   // rr_next 是全局游标，需要用 rr_lock 保护；返回 RUNNABLE 进程时
   // 必须保持 p->lock，未选中的进程锁必须释放。
   // 当前占位实现每次都从 0 开始扫描，且没有维护锁协议。

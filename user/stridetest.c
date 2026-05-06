@@ -20,6 +20,7 @@ check_pinfo(int pids[CHILDREN])
 {
   struct pstat ps[NPROC];
 
+  // LAB ch2: 调用 getpinfo(ps)，在 ps[] 中找到 pids[] 对应的
   // 子进程，并检查 tickets。建议准备 seen[CHILDREN] 和循环变量 i/j；
   // seen[j] 表示 pids[j] 是否已经在 ps[] 中出现。
   //
@@ -51,12 +52,15 @@ worker(int id, int fd)
   r.loops = 0;
   start = uptime();
 
+  // LAB ch2: 和 schedtest 一样构造 CPU-bound 工作负载。不要 sleep，
   // 也不要主动 yield；运行 RUN_TICKS 个 tick，每轮只增加 r.loops。
   // tickets 越多的子进程，长期 loops 应该越大。
   while(uptime() - start < RUN_TICKS) {
+    // LAB ch2: 增加 r.loops。
   }
 
   r.elapsed = uptime() - start;
+  // LAB ch2: 写回 id、tickets、elapsed、loops；父进程会按 r.id
   // 保存 loops，用来检查 1:2:4 的长期趋势。
   write(fd, &r, sizeof(r));
   close(fd);
@@ -66,6 +70,7 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
+  // LAB ch2: 创建 tickets 为 1、2、4 的 CPU-bound 子进程。不要把这里
   // 当作第二个 pipe 练习；pipe/fork/read/wait 可以直接复用 schedtest.c
   // 的结构。建议准备 p[2]、i、pid、pids[CHILDREN]、struct result r
   // 和 loops[CHILDREN]。
