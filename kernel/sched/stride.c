@@ -6,12 +6,12 @@
 #include "defs.h"
 #include "sched.h"
 
-// LAB ch2: 根据 tickets 计算 stride；无效 tickets 不应导致除零。
 static uint64
 stride_for_tickets(int tickets)
 {
-  (void)tickets;
-  return STRIDE_BIG;
+  if(tickets < 1)
+    tickets = 1;
+  return STRIDE_BIG / tickets;
 }
 
 void
@@ -19,41 +19,55 @@ sched_stride_init(void)
 {
 }
 
-// LAB ch2: 给新进程设置默认 tickets、stride 和 pass。
 void
 sched_init_proc(struct proc *p)
 {
-  (void)p;
+  p->tickets = SCHED_DEFAULT_TICKETS;
+  p->stride = stride_for_tickets(p->tickets);
+  p->pass = 0;
 }
 
-// LAB ch2: 更新进程的 tickets/stride，保持 pass 不变。
-// 修改进程调度字段时需要遵守 p->lock 协议。
 int
 sched_set_tickets(struct proc *p, int tickets)
 {
   if(tickets < 1 || tickets > SCHED_MAX_TICKETS)
     return -1;
 
-  (void)p;
-  (void)stride_for_tickets(tickets);
+  acquire(&p->lock);
+  p->tickets = tickets;
+  p->stride = stride_for_tickets(tickets);
+  release(&p->lock);
   return 0;
 }
 
-// LAB ch2: 选择 pass 最小的 RUNNABLE 进程。
-// 返回时持有 best->lock；未选中的进程锁必须释放。
-// pass 相同时 pid 小的进程优先。
 static struct proc *
 sched_scan_best(void)
 {
-  return sched_pick_rr();
+  struct proc *p;
+  struct proc *best = 0;
+
+  for(p = proc; p < &proc[NPROC]; p++) {
+    acquire(&p->lock);
+    if(p->state == RUNNABLE &&
+       (best == 0 ||
+        p->pass < best->pass ||
+        (p->pass == best->pass && p->pid < best->pid))) {
+      if(best != 0)
+        release(&best->lock);
+      best = p;
+    } else {
+      release(&p->lock);
+    }
+  }
+
+  return best;
 }
 
-// LAB ch2: 被选中的进程需要推进自己的虚拟时间。
 static void
 sched_commit(struct proc *best)
 {
-  if(best == 0)
-    return;
+  if(best != 0)
+    best->pass += best->stride;
 }
 
 struct proc *

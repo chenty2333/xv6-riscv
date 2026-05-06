@@ -144,7 +144,6 @@ consoleintr(int c)
   acquire(&cons.lock);
 
   switch(c){
-  case C('P'):  // LAB ch1: 调用 procdump()。
     break;
   case C('U'):  // Kill line.
     while(cons.e != cons.w &&

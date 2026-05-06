@@ -21,15 +21,12 @@ worker(int id, int fd)
   r.loops = 0;
   start = uptime();
 
-  // LAB ch1: 构造 CPU-bound 工作负载：从 start 起运行 RUN_TICKS
   // 个 tick。循环体不要 sleep 或读写文件，只累加 r.loops，
   // 让进程依赖时钟中断被 RR 调度器切换。
   while(uptime() - start < RUN_TICKS) {
-    // LAB ch1: 增加 r.loops。
   }
 
   r.elapsed = uptime() - start;
-  // LAB ch1: 将 struct result 写入 pipe 写端，父进程会读取
   // sizeof(r) 字节。写完关闭 fd，并用 exit(0) 结束子进程。
   write(fd, &r, sizeof(r));
   close(fd);
@@ -39,7 +36,6 @@ worker(int id, int fd)
 int
 main(int argc, char *argv[])
 {
-  // LAB ch1: 本程序需要完整补全 pipe -> fork -> read -> wait。
   // 建议准备 p[2]、i、pid，以及接收结果的 struct result r。
   //
   // pipe(p) 后，p[0] 是读端，p[1] 是写端。子进程写 struct result，

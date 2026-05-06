@@ -171,8 +171,6 @@ freeproc(struct proc *p)
   p->chan = 0;
   p->killed = 0;
   p->xstate = 0;
-  // LAB ch2: 清零 tickets、stride、pass。
-  // LAB ch1: 清零 sched_count。
   p->state = UNUSED;
 }
 
@@ -444,10 +442,12 @@ scheduler(void)
 
     p = sched_pick_next();
     if(p != 0) {
-      // LAB ch1: 完成 scheduler -> process 的切换协议。
-      // 进入这里时 p->lock 已由 sched_pick_next() 持有；切换前需要更新
-      // 进程状态和当前 CPU，切回后清理 CPU 状态并释放 p->lock。
-      swtch(0, 0);
+      p->state = RUNNING;
+      c->proc = p;
+      p->sched_count++;
+      swtch(&c->context, &p->context);
+      c->proc = 0;
+      release(&p->lock);
     } else {
       // nothing to run; stop running on this core until an interrupt.
       asm volatile("wfi");
@@ -483,11 +483,14 @@ sched(void)
 }
 
 // Give up the CPU for one scheduling round.
-// LAB ch1: 当前进程主动回到 scheduler。调用 sched() 前必须持有
-// p->lock，并且不能继续保持 RUNNING 状态；返回后释放 p->lock。
 void
 yield(void)
 {
+  struct proc *p = myproc();
+  acquire(&p->lock);
+  p->state = RUNNABLE;
+  sched();
+  release(&p->lock);
 }
 
 // A fork child's very first scheduling by scheduler()
@@ -675,12 +678,10 @@ procdump(void)
     else
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
-    // LAB ch1: 打印 sched_count。
     printf("\n");
   }
 }
 
-// LAB ch2: 将 proc[] 的调度状态拷贝到用户提供的 struct pstat 数组。
 int
 getpinfo(struct pstat *ps)
 {

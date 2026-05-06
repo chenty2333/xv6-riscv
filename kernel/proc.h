@@ -91,9 +91,10 @@ struct proc {
   int killed;                  // If non-zero, have been killed
   int xstate;                  // Exit status to be returned to parent's wait
   int pid;                     // Process ID
-
-  // LAB ch2: 添加 tickets、stride、pass 字段。
-  // LAB ch1: 添加 sched_count 字段。
+  int tickets;                 // Stride scheduler tickets
+  uint64 stride;               // Stride increment for each run
+  uint64 pass;                 // Stride scheduler virtual time
+  uint64 sched_count;          // Times this process has been scheduled
 
   // wait_lock must be held when using this:
   struct proc *parent;         // Parent process
